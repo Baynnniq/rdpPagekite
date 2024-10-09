@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Install Pagekite
+      run: curl -O https://pagekite.net/pk/pagekite.py && chmod +x pagekite.py
+
+    - name: Enable TS (Remote Desktop)
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
+    
+    - name: Enable Firewall Rule for Remote Desktop
+      run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    
+    - name: Allow User RDP Authentication
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+
+    - name: Set RDP User Password
+      run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+
+    - name: Start Pagekite Tunnel
+      run: |
+        ./pagekite.py 3389 your-subdomain.pagekite.me ${{ secrets.PAGEKITE_API_KEY }}
+    
+    - name: Display Pagekite Tunnel Info
+      run: echo "Tunnel created. Use the following URL to connect to the RDP session: your-subdomain.pagekite.me"
