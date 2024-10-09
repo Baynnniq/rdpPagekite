@@ -7,14 +7,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install Pagekite
+    - name: Download Pagekite
       run: |
-        pip install pagekite
+        Invoke-WebRequest https://pagekite.net/pk-pagekite.py -OutFile pagekite.py
 
     - name: Enable TS (Remote Desktop)
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
@@ -30,7 +25,7 @@ jobs:
 
     - name: Start Pagekite
       run: |
-        pagekite 3389 baynnniq.pagekite.me --apikey ${{ secrets.PAGEKITE_API_KEY }}
+        python pagekite.py 3389 baynnniq.pagekite.me --apikey ${{ secrets.PAGEKITE_API_KEY }}
 
     - name: Display Pagekite Output
       run: |
