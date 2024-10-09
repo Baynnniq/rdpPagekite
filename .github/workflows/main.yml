@@ -7,8 +7,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Download Pagekite
-      run: Invoke-WebRequest https://pagekite.net/pk-pagekite.exe -OutFile pagekite.exe
+    - name: Download Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Pagekite
+      run: |
+        pip install pagekite
 
     - name: Enable TS (Remote Desktop)
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
@@ -24,7 +30,8 @@ jobs:
 
     - name: Start Pagekite
       run: |
-        .\pagekite.exe --apikey ${{ secrets.PAGEKITE_API_KEY }} 3389 baynnniq.pagekite.me
+        pagekite 3389 baynnniq.pagekite.me --apikey ${{ secrets.PAGEKITE_API_KEY }}
 
     - name: Display Pagekite Output
-      run: cat pagekite.log
+      run: |
+        echo "Tunnel created. Use the following URL to connect to the RDP session: baynnniq.pagekite.me"
