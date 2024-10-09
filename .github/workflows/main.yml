@@ -9,7 +9,7 @@ jobs:
     steps:
     - name: Download Pagekite
       run: |
-        Invoke-WebRequest https://pagekite.net/pk-pagekite.py -OutFile pagekite.py
+        Invoke-WebRequest https://pagekite.net/pk/pagekite.py -OutFile pagekite.py
 
     - name: Enable TS (Remote Desktop)
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
